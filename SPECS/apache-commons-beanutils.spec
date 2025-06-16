@@ -2,12 +2,16 @@
 
 Name:           apache-commons-beanutils
 Version:        1.9.4
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        Java utility methods for accessing and modifying the properties of arbitrary JavaBeans
 License:        ASL 2.0
 URL:            http://commons.apache.org/beanutils
 BuildArch:      noarch
+ExclusiveArch:  %{java_arches} noarch
+
 Source0:        http://archive.apache.org/dist/commons/beanutils/source/commons-beanutils-%{version}-src.tar.gz
+
+Patch0:         0001-Fix-CVE-2025-48734.patch
 
 BuildRequires:  maven-local
 %if %{with bootstrap}
@@ -32,6 +36,7 @@ Summary:        Javadoc for %{name}
 
 %prep
 %setup -q -n commons-beanutils-%{version}-src
+%patch 0 -p1
 sed -i 's/\r//' *.txt
 
 %pom_remove_plugin :maven-assembly-plugin
@@ -56,6 +61,10 @@ sed -i 's/\r//' *.txt
 %doc LICENSE.txt NOTICE.txt
 
 %changelog
+* Fri Jun 13 2025 Mikolaj Izdebski <mizdebsk@redhat.com>
+- Fix improper access control vulnerability
+- Resolves: CVE-2025-48734
+
 * Mon Aug 09 2021 Mohan Boddu <mboddu@redhat.com> - 1.9.4-9
 - Rebuilt for IMA sigs, glibc 2.34, aarch64 flags
   Related: rhbz#1991688

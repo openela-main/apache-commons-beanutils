@@ -3,12 +3,16 @@
 
 Name:           apache-%{short_name}
 Version:        1.9.3
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Java utility methods for accessing and modifying the properties of arbitrary JavaBeans
 License:        ASL 2.0
 URL:            http://commons.apache.org/%{base_name}
 BuildArch:      noarch
+
 Source0:        http://archive.apache.org/dist/commons/%{base_name}/source/%{short_name}-%{version}-src.tar.gz
+
+Patch0:         0001-Fix-CVE-2019-10086.patch
+Patch1:         0002-Fix-CVE-2025-48734.patch
 
 BuildRequires:  maven-local
 BuildRequires:  mvn(commons-collections:commons-collections)
@@ -30,6 +34,8 @@ Summary:        Javadoc for %{name}
 
 %prep
 %setup -q -n %{short_name}-%{version}-src
+%patch -P0 -p1
+%patch -P1 -p1
 sed -i 's/\r//' *.txt
 
 %pom_remove_plugin :maven-assembly-plugin
@@ -54,6 +60,10 @@ sed -i 's/\r//' *.txt
 %doc LICENSE.txt NOTICE.txt
 
 %changelog
+* Mon Jun 16 2025 Mikolaj Izdebski <mizdebsk@redhat.com> - 1.9.3-5
+- Fix improper access control vulnerabilities
+- Resolves: CVE-2019-10086, CVE-2025-48734
+
 * Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.9.3-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
